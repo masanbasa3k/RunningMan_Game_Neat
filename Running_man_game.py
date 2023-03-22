@@ -70,9 +70,6 @@ class Man:
         if self.man_jump:
             self.jump()
         
-        if self.step_index >= 10:
-            self.step_index = 0
-
         if userInput[pygame.K_SPACE] and not self.man_jump:
             self.man_run = False
             self.man_jump = True
