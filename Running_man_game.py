@@ -3,7 +3,8 @@ import os
 import random
 
 pygame.init()
-GLB_SPD = 5
+
+GLB_SPD = 10
 STAT_FONT = pygame.font.SysFont("comicsans", 50)
 
 SCREEN_WIDTH, SCREEN_HEIGHT = 640*2, 480
@@ -32,11 +33,10 @@ BG = pygame.transform.scale((loadImage("spr_bg.png")), (SCREEN_WIDTH, SCREEN_HEI
 
 
 class Man:
-    
     MAX_ROTATION = 25
     ROT_VEL = 20
     ANIMATION_TIME = GLB_SPD
-    JUMP_VEL = 8.5 
+    JUMP_VEL = 10.5
 
     def __init__(self,x,y):
         self.run_img = RUNNING
@@ -58,7 +58,7 @@ class Man:
     def jump(self):
         self.img = self.jump_img
         if self.man_jump:
-             self.y -= self.jump_vel * 5
+             self.y -= self.jump_vel * 4
              self.jump_vel -= 0.4
         if self.jump_vel < - self.JUMP_VEL:
             self.jump_vel = self.JUMP_VEL
@@ -69,7 +69,7 @@ class Man:
             self.move()
         if self.man_jump:
             self.jump()
-        
+
         if userInput[pygame.K_SPACE] and not self.man_jump:
             self.man_run = False
             self.man_jump = True
@@ -175,9 +175,8 @@ class Obstacle:
         return False
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles
     run = True
-
+    
     win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     player = Man(40,0)
@@ -192,21 +191,16 @@ def main():
     score = 0
 
     while run:
-        clock.tick(60)
+        
+        clock.tick(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
                 pygame.quit()     
                 quit()
 
-        # if len(obstacles) == 0:
-        #     if random.randint(0, 1) == 0:
-        #         obstacles.append(Obstacle(SMALL_SPIKES))
-        #     elif random.randint(0, 1) == 1:
-        #         obstacles.append(Obstacle(TALL_SPIKES))
-
         keys = pygame.key.get_pressed()
-        player.update(keys)
+        player.update(keys)  
 
         add_obs = False
         rem = []
@@ -225,6 +219,7 @@ def main():
         if add_obs:
             img = SMALL_SPIKES
             y = 370
+            score += 10
             if random.randrange(0,2) == 0:
                 img = SMALL_SPIKES
                 y = 370
@@ -236,11 +231,7 @@ def main():
         for r in rem:
             obstacles.remove(r)
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:   
-            player.jump()
         player.move()
-        
         base.move()
         draw_window(win, player, obstacles, base, score)
     pygame.quit()     
